@@ -150,7 +150,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-black">
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full mx-auto">
         
         {/* Header */}
         <div className="text-center mb-10">
