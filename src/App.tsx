@@ -1,49 +1,85 @@
 import React, { useState, useMemo } from 'react';
-import { Briefcase, ChevronRight,  ExternalLink, LineChart, ShieldCheck, Users, TrendingDown, Info } from 'lucide-react';
+import { Briefcase, ChevronRight, ExternalLink, LineChart, ShieldCheck, Users, TrendingDown, Info, PieChart } from 'lucide-react';
 
 // Convert hourly to annual based on 2080 hours (40 hrs/week * 52 weeks)
 const ANNUAL_HOURS = 2080;
 
 const staffingData = [
-  { role: "Accountant", level: "Mid-level", rateMin: 13.00, rateMax: 13.00, usMin: 60000, usMax: 75000 },
-  { role: "Accountant", level: "Senior", rateMin: 13.00, rateMax: 15.00, usMin: 75000, usMax: 90000 },
-  { role: "Admin Specialist", level: "Senior", rateMin: 12.00, rateMax: 20.00, usMin: 50000, usMax: 65000 },
-  { role: "Billing Specialist", level: "Mid-level", rateMin: 9.00, rateMax: 9.25, usMin: 45000, usMax: 55000 },
-  { role: "Billing Specialist", level: "Lead", rateMin: 10.25, rateMax: 10.25, usMin: 55000, usMax: 70000 },
-  { role: "Bookkeeper", level: "Senior", rateMin: 16.00, rateMax: 23.00, usMin: 60000, usMax: 75000 },
-  { role: "Chief of Staff", level: "Lead", rateMin: 19.00, rateMax: 21.00, usMin: 120000, usMax: 160000 },
-  { role: "Customer Service (Bilingual)", level: "Senior", rateMin: 14.42, rateMax: 14.42, usMin: 45000, usMax: 55000 },
-  { role: "Customer Service (Phone)", level: "Mid-level", rateMin: 12.00, rateMax: 12.00, usMin: 35000, usMax: 45000 },
-  { role: "Customer Service (Phone)", level: "Senior", rateMin: 11.33, rateMax: 12.00, usMin: 45000, usMax: 55000 },
-  { role: "Customer Service (Voice)", level: "Mid-level", rateMin: 9.00, rateMax: 9.25, usMin: 35000, usMax: 45000 },
-  { role: "Customer Service (Voice)", level: "Senior", rateMin: 9.00, rateMax: 9.25, usMin: 45000, usMax: 55000 },
-  { role: "Customer Service (Voice)", level: "Lead", rateMin: 11.00, rateMax: 15.00, usMin: 55000, usMax: 65000 },
-  { role: "Customer Support (Voice)", level: "Senior", rateMin: 15.00, rateMax: 15.00, usMin: 45000, usMax: 55000 },
-  { role: "Executive Assistant", level: "Mid-level", rateMin: 12.00, rateMax: 12.00, usMin: 60000, usMax: 75000 },
-  { role: "Executive Assistant", level: "Senior", rateMin: 15.00, rateMax: 15.00, usMin: 75000, usMax: 95000 },
-  { role: "Executive Assistant", level: "Lead", rateMin: 18.00, rateMax: 19.50, usMin: 95000, usMax: 120000 },
-  { role: "Government RFP and Grants Specialist", level: "Lead", rateMin: 19.00, rateMax: 19.00, usMin: 85000, usMax: 110000 },
-  { role: "Graphic Designer", level: "Senior", rateMin: 13.00, rateMax: 15.00, usMin: 70000, usMax: 90000 },
-  { role: "HR Operations Specialist", level: "Mid-level", rateMin: 6.50, rateMax: 9.00, usMin: 55000, usMax: 70000 },
-  { role: "HR Operations Specialist", level: "Senior", rateMin: 8.00, rateMax: 14.50, usMin: 70000, usMax: 90000 },
-  { role: "HR Operations Specialist", level: "Lead", rateMin: 7.50, rateMax: 9.50, usMin: 85000, usMax: 105000 },
-  { role: "Lead Generation & Copywriter", level: "Senior", rateMin: 13.00, rateMax: 13.00, usMin: 65000, usMax: 85000 },
-  { role: "Lead Generation & Marketing Specialist", level: "Senior", rateMin: 16.00, rateMax: 16.00, usMin: 70000, usMax: 95000 },
-  { role: "Onboarding Specialist", level: "Mid-level", rateMin: 10.00, rateMax: 11.50, usMin: 50000, usMax: 65000 },
-  { role: "Onboarding Specialist", level: "Senior", rateMin: 12.00, rateMax: 12.00, usMin: 60000, usMax: 75000 },
-  { role: "Operations Coordinator", level: "Senior", rateMin: 14.00, rateMax: 15.00, usMin: 60000, usMax: 75000 },
-  { role: "Project Coordinator", level: "Senior", rateMin: 14.00, rateMax: 14.00, usMin: 65000, usMax: 85000 },
-  { role: "Quality Assurance Specialist", level: "Senior", rateMin: 16.00, rateMax: 16.00, usMin: 75000, usMax: 95000 },
-  { role: "Sales Assistant", level: "Senior", rateMin: 14.00, rateMax: 14.00, usMin: 50000, usMax: 65000 },
-  { role: "Social Media Marketing Specialist", level: "Senior", rateMin: 15.00, rateMax: 15.00, usMin: 65000, usMax: 85000 },
-  { role: "Subsidy Specialist", level: "Mid-level", rateMin: 9.25, rateMax: 9.25, usMin: 45000, usMax: 55000 },
-  { role: "Subsidy Specialist", level: "Senior", rateMin: 9.25, rateMax: 9.25, usMin: 55000, usMax: 65000 },
-  { role: "Subsidy Specialist", level: "Lead", rateMin: 10.25, rateMax: 10.25, usMin: 65000, usMax: 75000 },
-  { role: "Talent Acquisition Specialist", level: "Mid-level", rateMin: 10.00, rateMax: 10.00, usMin: 65000, usMax: 85000 },
-  { role: "Talent Acquisition Specialist", level: "Senior", rateMin: 11.00, rateMax: 11.00, usMin: 80000, usMax: 100000 },
-  { role: "Tech/IT Specialist", level: "Senior", rateMin: 11.00, rateMax: 11.00, usMin: 85000, usMax: 110000 },
-  { role: "Tech/IT Specialist", level: "Lead", rateMin: 14.00, rateMax: 14.00, usMin: 110000, usMax: 140000 },
-  { role: "Video Editor", level: "Senior", rateMin: 11.50, rateMax: 11.50, usMin: 65000, usMax: 85000 },
+  { role: "Accountant", level: "Mid-level", rateMin: 14, rateMax: 18, usMin: 60000, usMax: 75000 },
+  { role: "Accountant", level: "Senior", rateMin: 18, rateMax: 21, usMin: 75000, usMax: 90000 },
+  { role: "Accountant", level: "Lead", rateMin: 21, rateMax: 26, usMin: 90000, usMax: 110000 },
+  { role: "Admin Specialist", level: "Mid-level", rateMin: 11, rateMax: 14, usMin: 40000, usMax: 50000 },
+  { role: "Admin Specialist", level: "Senior", rateMin: 14, rateMax: 16, usMin: 50000, usMax: 65000 },
+  { role: "Admin Specialist", level: "Lead", rateMin: 16, rateMax: 18, usMin: 65000, usMax: 80000 },
+  { role: "Billing Specialist", level: "Mid-level", rateMin: 12, rateMax: 14, usMin: 45000, usMax: 55000 },
+  { role: "Billing Specialist", level: "Senior", rateMin: 14, rateMax: 16, usMin: 50000, usMax: 60000 },
+  { role: "Billing Specialist", level: "Lead", rateMin: 16, rateMax: 18, usMin: 55000, usMax: 70000 },
+  { role: "Bookkeeper", level: "Mid-level", rateMin: 13, rateMax: 15, usMin: 50000, usMax: 60000 },
+  { role: "Bookkeeper", level: "Senior", rateMin: 15, rateMax: 18, usMin: 60000, usMax: 75000 },
+  { role: "Bookkeeper", level: "Lead", rateMin: 18, rateMax: 21, usMin: 75000, usMax: 90000 },
+  { role: "Chief of Staff", level: "Mid-level", rateMin: 16, rateMax: 18, usMin: 80000, usMax: 100000 },
+  { role: "Chief of Staff", level: "Senior", rateMin: 18, rateMax: 21, usMin: 100000, usMax: 120000 },
+  { role: "Chief of Staff", level: "Lead", rateMin: 20, rateMax: 26, usMin: 120000, usMax: 160000 },
+  { role: "Copywriter", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 55000, usMax: 65000 },
+  { role: "Copywriter", level: "Senior", rateMin: 16, rateMax: 18, usMin: 65000, usMax: 85000 },
+  { role: "Copywriter", level: "Lead", rateMin: 18, rateMax: 21, usMin: 85000, usMax: 100000 },
+  { role: "Customer Service (Bilingual)", level: "Mid-level", rateMin: 15, rateMax: 16, usMin: 40000, usMax: 45000 },
+  { role: "Customer Service (Bilingual)", level: "Senior", rateMin: 16, rateMax: 17, usMin: 45000, usMax: 55000 },
+  { role: "Customer Service (Bilingual)", level: "Lead", rateMin: 17, rateMax: 19, usMin: 55000, usMax: 65000 },
+  { role: "Customer Service (Voice)", level: "Mid-level", rateMin: 13, rateMax: 14, usMin: 35000, usMax: 45000 },
+  { role: "Customer Service (Voice)", level: "Senior", rateMin: 14, rateMax: 15, usMin: 45000, usMax: 55000 },
+  { role: "Customer Service (Voice)", level: "Lead", rateMin: 15, rateMax: 17, usMin: 55000, usMax: 65000 },
+  { role: "Customer Support (Non-Voice)", level: "Mid-level", rateMin: 12, rateMax: 13, usMin: 35000, usMax: 40000 },
+  { role: "Customer Support (Non-Voice)", level: "Senior", rateMin: 13, rateMax: 14, usMin: 40000, usMax: 50000 },
+  { role: "Customer Support (Non-Voice)", level: "Lead", rateMin: 14, rateMax: 15, usMin: 50000, usMax: 60000 },
+  { role: "Executive Assistant", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 60000, usMax: 75000 },
+  { role: "Executive Assistant", level: "Senior", rateMin: 16, rateMax: 18, usMin: 75000, usMax: 95000 },
+  { role: "Executive Assistant", level: "Lead", rateMin: 18, rateMax: 21, usMin: 95000, usMax: 120000 },
+  { role: "Government RFP & Grants Specialist", level: "Mid-level", rateMin: 16, rateMax: 18, usMin: 65000, usMax: 85000 },
+  { role: "Government RFP & Grants Specialist", level: "Senior", rateMin: 18, rateMax: 21, usMin: 85000, usMax: 110000 },
+  { role: "Government RFP & Grants Specialist", level: "Lead", rateMin: 21, rateMax: 26, usMin: 110000, usMax: 140000 },
+  { role: "Graphic Designer", level: "Mid-level", rateMin: 15, rateMax: 17, usMin: 55000, usMax: 70000 },
+  { role: "Graphic Designer", level: "Senior", rateMin: 17, rateMax: 19, usMin: 70000, usMax: 90000 },
+  { role: "Graphic Designer", level: "Lead", rateMin: 19, rateMax: 21, usMin: 90000, usMax: 110000 },
+  { role: "HR Operations Specialist", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 55000, usMax: 70000 },
+  { role: "HR Operations Specialist", level: "Senior", rateMin: 16, rateMax: 18, usMin: 70000, usMax: 90000 },
+  { role: "HR Operations Specialist", level: "Lead", rateMin: 18, rateMax: 21, usMin: 85000, usMax: 105000 },
+  { role: "Lead Gen & Marketing Specialist", level: "Mid-level", rateMin: 16, rateMax: 18, usMin: 60000, usMax: 70000 },
+  { role: "Lead Gen & Marketing Specialist", level: "Senior", rateMin: 18, rateMax: 21, usMin: 70000, usMax: 95000 },
+  { role: "Lead Gen & Marketing Specialist", level: "Lead", rateMin: 21, rateMax: 24, usMin: 95000, usMax: 115000 },
+  { role: "Lead Generation Specialist", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 55000, usMax: 65000 },
+  { role: "Lead Generation Specialist", level: "Senior", rateMin: 16, rateMax: 18, usMin: 65000, usMax: 85000 },
+  { role: "Lead Generation Specialist", level: "Lead", rateMin: 18, rateMax: 21, usMin: 85000, usMax: 100000 },
+  { role: "Onboarding Specialist", level: "Mid-level", rateMin: 13, rateMax: 15, usMin: 50000, usMax: 65000 },
+  { role: "Onboarding Specialist", level: "Senior", rateMin: 15, rateMax: 17, usMin: 60000, usMax: 75000 },
+  { role: "Onboarding Specialist", level: "Lead", rateMin: 17, rateMax: 19, usMin: 75000, usMax: 90000 },
+  { role: "Operations Coordinator", level: "Mid-level", rateMin: 13, rateMax: 15, usMin: 50000, usMax: 60000 },
+  { role: "Operations Coordinator", level: "Senior", rateMin: 15, rateMax: 17, usMin: 60000, usMax: 75000 },
+  { role: "Operations Coordinator", level: "Lead", rateMin: 17, rateMax: 19, usMin: 75000, usMax: 90000 },
+  { role: "Project Coordinator", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 55000, usMax: 65000 },
+  { role: "Project Coordinator", level: "Senior", rateMin: 16, rateMax: 18, usMin: 65000, usMax: 85000 },
+  { role: "Project Coordinator", level: "Lead", rateMin: 18, rateMax: 21, usMin: 85000, usMax: 100000 },
+  { role: "Quality Assurance Specialist", level: "Mid-level", rateMin: 14, rateMax: 15, usMin: 60000, usMax: 75000 },
+  { role: "Quality Assurance Specialist", level: "Senior", rateMin: 15, rateMax: 16, usMin: 75000, usMax: 95000 },
+  { role: "Quality Assurance Specialist", level: "Lead", rateMin: 16, rateMax: 17, usMin: 95000, usMax: 110000 },
+  { role: "Sales Assistant", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 40000, usMax: 50000 },
+  { role: "Sales Assistant", level: "Senior", rateMin: 16, rateMax: 18, usMin: 50000, usMax: 65000 },
+  { role: "Sales Assistant", level: "Lead", rateMin: 18, rateMax: 21, usMin: 65000, usMax: 80000 },
+  { role: "Social Media Marketing Specialist", level: "Mid-level", rateMin: 14, rateMax: 16, usMin: 50000, usMax: 65000 },
+  { role: "Social Media Marketing Specialist", level: "Senior", rateMin: 16, rateMax: 17, usMin: 65000, usMax: 85000 },
+  { role: "Social Media Marketing Specialist", level: "Lead", rateMin: 17, rateMax: 18, usMin: 85000, usMax: 100000 },
+  { role: "Subsidy Specialist", level: "Mid-level", rateMin: 13, rateMax: 14, usMin: 45000, usMax: 55000 },
+  { role: "Subsidy Specialist", level: "Senior", rateMin: 14, rateMax: 15, usMin: 55000, usMax: 65000 },
+  { role: "Subsidy Specialist", level: "Lead", rateMin: 15, rateMax: 16, usMin: 65000, usMax: 75000 },
+  { role: "Talent Acquisition Specialist", level: "Mid-level", rateMin: 15, rateMax: 17, usMin: 65000, usMax: 85000 },
+  { role: "Talent Acquisition Specialist", level: "Senior", rateMin: 17, rateMax: 19, usMin: 80000, usMax: 100000 },
+  { role: "Talent Acquisition Specialist", level: "Lead", rateMin: 19, rateMax: 22, usMin: 100000, usMax: 120000 },
+  { role: "Tech / IT Specialist", level: "Mid-level", rateMin: 16, rateMax: 18, usMin: 70000, usMax: 85000 },
+  { role: "Tech / IT Specialist", level: "Senior", rateMin: 18, rateMax: 20, usMin: 85000, usMax: 110000 },
+  { role: "Tech / IT Specialist", level: "Lead", rateMin: 20, rateMax: 22, usMin: 110000, usMax: 140000 },
+  { role: "Video Editor", level: "Mid-level", rateMin: 16, rateMax: 18, usMin: 50000, usMax: 65000 },
+  { role: "Video Editor", level: "Senior", rateMin: 18, rateMax: 20, usMin: 65000, usMax: 85000 },
+  { role: "Video Editor", level: "Lead", rateMin: 20, rateMax: 22, usMin: 85000, usMax: 105000 },
 ];
 
 const formatCurrency = (value: number) => {
@@ -92,6 +128,15 @@ export default function App() {
   const averageSavings = (savingsMin + savingsMax) / 2;
   const savingsPercentage = Math.round((averageSavings / ((currentData.usMin + currentData.usMax) / 2)) * 100);
 
+  // Helper to format breakdown amounts based on percentage
+  const formatBreakdownAmount = (percentage: number) => {
+    const minAmount = ourCostMin * percentage;
+    const maxAmount = ourCostMax * percentage;
+    return minAmount === maxAmount
+      ? formatCurrency(minAmount)
+      : `${formatCurrency(minAmount)} to ${formatCurrency(maxAmount)}`;
+  };
+
   // Generate Google Jobs Link dynamically
   const googleJobsUrl = `https://www.google.com/search?q=${encodeURIComponent(
     `${currentData.level} ${currentData.role} salary`
@@ -104,10 +149,10 @@ export default function App() {
         {/* Header */}
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Outsourcing <span className="text-blue-600">ROI Calculator</span>
+            Remote Hiring <span className="text-rose-600">ROI Calculator</span>
           </h1>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Discover how much you can save annually by hiring top-tier remote talent with us instead of standard US domestic hires.
+            Compare the estimated annual cost of a dedicated Structure 2 Scale team member with a comparable U.S.-based hire
           </p>
         </div>
 
@@ -116,8 +161,8 @@ export default function App() {
           {/* Left Column: Input Form */}
           <div className="lg:col-span-4 bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6 md:p-8 border border-slate-100">
             <h2 className="text-xl font-bold mb-6 flex items-center text-slate-800">
-              <Briefcase className="w-5 h-5 mr-2 text-blue-500" />
-              Configure Role
+              <Briefcase className="w-5 h-5 mr-2 text-rose-500" />
+              Build your Comparison
             </h2>
             
             <div className="space-y-6">
@@ -130,7 +175,7 @@ export default function App() {
                   <select 
                     value={selectedRole}
                     onChange={handleRoleChange}
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-shadow"
                   >
                     {roles.map(role => (
                       <option key={role} value={role}>{role}</option>
@@ -151,7 +196,7 @@ export default function App() {
                   <select 
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-shadow"
                   >
                     {availableLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -164,8 +209,8 @@ export default function App() {
               </div>
 
               <div className="pt-6 border-t border-slate-100">
-                <div className="flex items-start text-sm text-slate-500 bg-blue-50/50 p-4 rounded-xl">
-                  <Info className="w-5 h-5 text-blue-400 mr-3 flex-shrink-0 mt-0.5" />
+                <div className="flex items-start text-sm text-slate-500 bg-rose-50/50 p-4 rounded-xl">
+                  <Info className="w-5 h-5 text-rose-400 mr-3 flex-shrink-0 mt-0.5" />
                   <p>
                     Calculations are based on standard full-time hours (<span className="font-semibold text-slate-700">2,080 hrs/yr</span>). US averages represent base salaries and exclude local hiring costs like benefits and taxes.
                   </p>
@@ -177,52 +222,75 @@ export default function App() {
           {/* Right Column: Output / Dashboard */}
           <div className="lg:col-span-8 space-y-6">
             
-            {/* Top Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Top Stat Cards Stacked vertically */}
+            <div className="grid grid-cols-1 gap-6">
               
-              {/* Our Rate Card */}
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 shadow-lg shadow-blue-900/20 text-white relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
-                <div className="flex items-center justify-between mb-4 relative z-10">
-                  <h3 className="font-medium text-blue-100 flex items-center">
-                    <ShieldCheck className="w-5 h-5 mr-2" />
-                    Our Annual Rate
-                  </h3>
-                </div>
-                <div className="relative z-10">
-                  <p className="text-3xl md:text-4xl font-bold mb-1">
-                    {ourCostMin === ourCostMax 
-                      ? formatCurrency(ourCostMin) 
-                      : `${formatCurrency(ourCostMin)} - ${formatCurrency(ourCostMax)}`}
-                  </p>
-                  <p className="text-blue-200 text-sm">
-                    {currentData.rateMin === currentData.rateMax 
-                      ? `$${currentData.rateMin.toFixed(2)} / hr` 
-                      : `$${currentData.rateMin.toFixed(2)} - $${currentData.rateMax.toFixed(2)} / hr`}
-                  </p>
-                </div>
-              </div>
-
-              {/* US Avg Rate Card */}
-              <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
+              {/* US Avg Rate Card (Now on top) */}
+              <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium text-slate-500 flex items-center">
                     <Users className="w-5 h-5 mr-2" />
                     US Average Salary
                   </h3>
                 </div>
-                <div>
-                  <p className="text-3xl md:text-4xl font-bold text-slate-800 mb-1">
-                     {formatCurrency(currentData.usMin)} - {formatCurrency(currentData.usMax)}
-                  </p>
+                <div className="overflow-hidden mb-2">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 mb-3 tracking-tight leading-tight whitespace-nowrap">
+                    {currentData.usMin === currentData.usMax ? (
+                      <span>{formatCurrency(currentData.usMin)}</span>
+                    ) : (
+                      <>
+                        <span>{formatCurrency(currentData.usMin)}</span>
+                        <span className="text-xl sm:text-2xl font-medium text-slate-400 mx-2">to</span>
+                        <span>{formatCurrency(currentData.usMax)}</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="text-slate-500 text-sm mb-2 font-medium">
+                    {currentData.usMin === currentData.usMax ? (
+                      `~$${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr`
+                    ) : (
+                      `~$${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} to $${(currentData.usMax / ANNUAL_HOURS).toFixed(2)} / hr`
+                    )}
+                  </div>
                   <a 
                     href={googleJobsUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                    className="inline-flex items-center text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors"
                   >
                     Verify on Google Jobs <ExternalLink className="w-3 h-3 ml-1" />
                   </a>
+                </div>
+              </div>
+
+              {/* Our Rate Card (Now below US average) */}
+              <div className="bg-gradient-to-br from-rose-600 to-red-800 rounded-2xl p-6 shadow-lg shadow-rose-900/20 text-white relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
+                <div className="flex items-center justify-between mb-4 relative z-10">
+                  <h3 className="font-medium text-rose-100 flex items-center">
+                    <ShieldCheck className="w-5 h-5 mr-2" />
+                    Estimated Annual Investment
+                  </h3>
+                </div>
+                <div className="relative z-10 overflow-hidden">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 tracking-tight leading-tight whitespace-nowrap">
+                    {ourCostMin === ourCostMax ? (
+                      <span>{formatCurrency(ourCostMin)}</span>
+                    ) : (
+                      <>
+                        <span>{formatCurrency(ourCostMin)}</span>
+                        <span className="text-xl sm:text-2xl font-medium text-rose-300 mx-2">to</span>
+                        <span>{formatCurrency(ourCostMax)}</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="text-rose-200 text-sm leading-tight whitespace-nowrap">
+                    {currentData.rateMin === currentData.rateMax ? (
+                      `$${currentData.rateMin.toFixed(2)} / hr`
+                    ) : (
+                      `$${currentData.rateMin.toFixed(2)} to $${currentData.rateMax.toFixed(2)} / hr`
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -239,10 +307,18 @@ export default function App() {
                       <TrendingDown className="w-5 h-5 mr-2 text-emerald-500" />
                       Your Estimated Savings
                     </h3>
-                    <div className="text-4xl md:text-6xl font-black text-emerald-600 tracking-tight">
-                      {formatCurrency(savingsMin)} <span className="text-2xl md:text-4xl text-emerald-400 font-bold">to</span> {formatCurrency(savingsMax)}
+                    <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight leading-tight mt-2 whitespace-nowrap">
+                      {savingsMin === savingsMax ? (
+                        <span>{formatCurrency(savingsMin)}</span>
+                      ) : (
+                        <>
+                          <span>{formatCurrency(savingsMin)}</span> <span className="text-xl sm:text-2xl lg:text-3xl text-emerald-400 font-bold">to</span>
+                          <br />
+                          <span>{formatCurrency(savingsMax)}</span>
+                        </>
+                      )}
                     </div>
-                    <p className="text-slate-500 mt-2 font-medium">
+                    <p className="text-slate-500 mt-4 font-medium">
                       Per employee, per year.
                     </p>
                   </div>
@@ -258,9 +334,71 @@ export default function App() {
               {/* Additional Value Add footer */}
               <div className="bg-slate-50 px-6 md:px-8 py-4 border-t border-slate-100">
                 <p className="text-sm text-slate-600 flex items-center justify-center md:justify-start">
-                  <LineChart className="w-4 h-4 mr-2 text-indigo-500" />
+                  <LineChart className="w-4 h-4 mr-2 text-rose-500" />
                   <strong>Hidden Bonus:</strong> US hiring adds ~25% in taxes and benefits. Your true savings are likely much higher!
                 </p>
+              </div>
+            </div>
+
+            {/* Rate Breakdown Card */}
+            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
+              <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                <PieChart className="w-5 h-5 mr-2 text-rose-500" />
+                Estimated Breakdown
+              </h3>
+              
+              <div className="space-y-5">
+                {/* Payroll */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
+                    <span className="font-semibold text-slate-700">
+                      Talent's Payroll <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.70)})</span>
+                    </span>
+                    <span className="font-bold text-slate-900">70%</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3">
+                    <div className="bg-rose-600 h-3 rounded-full" style={{ width: '70%' }}></div>
+                  </div>
+                </div>
+
+                {/* Bonuses */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
+                    <span className="font-semibold text-slate-700">
+                      Quarterly Bonuses <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.15)})</span>
+                    </span>
+                    <span className="font-bold text-slate-900">15%</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3">
+                    <div className="bg-rose-500 h-3 rounded-full opacity-90" style={{ width: '15%' }}></div>
+                  </div>
+                </div>
+
+                {/* Benefits */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
+                    <span className="font-semibold text-slate-700">
+                      Benefits (Healthcare, local statutory allowances, and talent recognition) <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.10)})</span>
+                    </span>
+                    <span className="font-bold text-slate-900">10%</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3">
+                    <div className="bg-rose-400 h-3 rounded-full opacity-80" style={{ width: '10%' }}></div>
+                  </div>
+                </div>
+
+                {/* TWB Program */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
+                    <span className="font-semibold text-slate-700">
+                      Talent Development & Community (Talent Without Borders training, coaching, and community support) <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.05)})</span>
+                    </span>
+                    <span className="font-bold text-slate-900">5%</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-3">
+                    <div className="bg-rose-300 h-3 rounded-full opacity-70" style={{ width: '5%' }}></div>
+                  </div>
+                </div>
               </div>
             </div>
 
