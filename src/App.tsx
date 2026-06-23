@@ -134,7 +134,13 @@ export default function App() {
     const maxAmount = ourCostMax * percentage;
     return minAmount === maxAmount
       ? formatCurrency(minAmount)
-      : `${formatCurrency(minAmount)} to ${formatCurrency(maxAmount)}`;
+      : (
+        <span className="whitespace-nowrap">
+          <span>{formatCurrency(minAmount)}</span>
+          <span className="mx-1 font-normal">to</span>
+          <span>{formatCurrency(maxAmount)}</span>
+        </span>
+      );
   };
 
   // Generate Google Jobs Link dynamically
@@ -143,15 +149,15 @@ export default function App() {
   )}&ibp=htl;jobs`;
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-slate-800">
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8 font-sans text-black">
       <div className="max-w-5xl mx-auto">
         
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
-            Remote Hiring <span className="text-rose-600">ROI Calculator</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight mb-4">
+            Remote Hiring <span className="text-[#af0606]">ROI Calculator</span>
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-black max-w-2xl mx-auto font-medium">
             Compare the estimated annual cost of a dedicated Structure 2 Scale team member with a comparable U.S.-based hire
           </p>
         </div>
@@ -160,59 +166,59 @@ export default function App() {
           
           {/* Left Column: Input Form */}
           <div className="lg:col-span-4 bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6 md:p-8 border border-slate-100">
-            <h2 className="text-xl font-bold mb-6 flex items-center text-slate-800">
-              <Briefcase className="w-5 h-5 mr-2 text-rose-500" />
+            <h2 className="text-xl font-bold mb-6 flex items-center text-black">
+              <Briefcase className="w-5 h-5 mr-2 text-[#af0606]" />
               Build your Comparison
             </h2>
             
             <div className="space-y-6">
               {/* Role Selection */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-black mb-2">
                   Job Role
                 </label>
                 <div className="relative">
                   <select 
                     value={selectedRole}
                     onChange={handleRoleChange}
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-shadow"
+                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-black py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#af0606] focus:border-[#af0606] transition-shadow"
                   >
                     {roles.map(role => (
                       <option key={role} value={role}>{role}</option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4">
+                    <ChevronRight className="w-4 h-4 rotate-90 text-[#af0606]" />
                   </div>
                 </div>
               </div>
 
               {/* Level Selection */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                <label className="block text-sm font-semibold text-black mb-2">
                   Experience Level
                 </label>
                 <div className="relative">
                   <select 
                     value={selectedLevel}
                     onChange={(e) => setSelectedLevel(e.target.value)}
-                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-shadow"
+                    className="w-full appearance-none bg-slate-50 border border-slate-200 text-black py-3 px-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#af0606] focus:border-[#af0606] transition-shadow"
                   >
                     {availableLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                    <ChevronRight className="w-4 h-4 rotate-90" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4">
+                    <ChevronRight className="w-4 h-4 rotate-90 text-[#af0606]" />
                   </div>
                 </div>
               </div>
 
               <div className="pt-6 border-t border-slate-100">
-                <div className="flex items-start text-sm text-slate-500 bg-rose-50/50 p-4 rounded-xl">
-                  <Info className="w-5 h-5 text-rose-400 mr-3 flex-shrink-0 mt-0.5" />
+                <div className="flex items-start text-sm text-white bg-[#af0606] p-4 rounded-xl shadow-md">
+                  <Info className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
                   <p>
-                    Calculations are based on standard full-time hours (<span className="font-semibold text-slate-700">2,080 hrs/yr</span>). US averages represent base salaries and exclude local hiring costs like benefits and taxes.
+                    Calculations are based on standard full-time hours (<span className="font-semibold text-white">2,080 hrs/yr</span>). US averages represent base salaries and exclude local hiring costs like benefits and taxes.
                   </p>
                 </div>
               </div>
@@ -228,67 +234,75 @@ export default function App() {
               {/* US Avg Rate Card (Now on top) */}
               <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-medium text-slate-500 flex items-center">
-                    <Users className="w-5 h-5 mr-2" />
+                  <h3 className="font-semibold text-black flex items-center">
+                    <Users className="w-5 h-5 mr-2 text-[#af0606]" />
                     US Average Salary
                   </h3>
                 </div>
                 <div className="overflow-hidden mb-2">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-800 mb-3 tracking-tight leading-tight whitespace-nowrap">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-1 tracking-tight leading-tight">
                     {currentData.usMin === currentData.usMax ? (
                       <span>{formatCurrency(currentData.usMin)}</span>
                     ) : (
-                      <>
+                      <span className="whitespace-nowrap">
                         <span>{formatCurrency(currentData.usMin)}</span>
-                        <span className="text-xl sm:text-2xl font-medium text-slate-400 mx-2">to</span>
+                        <span className="text-xl sm:text-2xl font-medium text-black mx-2">to</span>
                         <span>{formatCurrency(currentData.usMax)}</span>
-                      </>
+                      </span>
                     )}
                   </div>
-                  <div className="text-slate-500 text-sm mb-2 font-medium">
+                  <div className="text-black text-sm mb-3 font-medium">
                     {currentData.usMin === currentData.usMax ? (
-                      `~$${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr`
+                      <span>~${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr</span>
                     ) : (
-                      `~$${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} to $${(currentData.usMax / ANNUAL_HOURS).toFixed(2)} / hr`
+                      <span className="whitespace-nowrap">
+                        <span>~${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr</span>
+                        <span className="text-xs mx-1">to</span>
+                        <span>${(currentData.usMax / ANNUAL_HOURS).toFixed(2)} / hr</span>
+                      </span>
                     )}
                   </div>
                   <a 
                     href={googleJobsUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm font-medium text-rose-600 hover:text-rose-800 transition-colors"
+                    className="inline-flex items-center text-sm font-bold text-[#af0606] hover:text-[#8a0505] transition-colors"
                   >
-                    Verify on Google Jobs <ExternalLink className="w-3 h-3 ml-1" />
+                    Verify on Google Jobs <ExternalLink className="w-4 h-4 ml-1" />
                   </a>
                 </div>
               </div>
 
               {/* Our Rate Card (Now below US average) */}
-              <div className="bg-gradient-to-br from-rose-600 to-red-800 rounded-2xl p-6 shadow-lg shadow-rose-900/20 text-white relative overflow-hidden">
+              <div className="bg-[#af0606] rounded-2xl p-6 shadow-lg shadow-red-900/20 text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
                 <div className="flex items-center justify-between mb-4 relative z-10">
-                  <h3 className="font-medium text-rose-100 flex items-center">
-                    <ShieldCheck className="w-5 h-5 mr-2" />
+                  <h3 className="font-semibold text-white flex items-center">
+                    <ShieldCheck className="w-5 h-5 mr-2 text-white" />
                     Estimated Annual Investment
                   </h3>
                 </div>
                 <div className="relative z-10 overflow-hidden">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 tracking-tight leading-tight whitespace-nowrap">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 tracking-tight leading-tight">
                     {ourCostMin === ourCostMax ? (
                       <span>{formatCurrency(ourCostMin)}</span>
                     ) : (
-                      <>
+                      <span className="whitespace-nowrap">
                         <span>{formatCurrency(ourCostMin)}</span>
-                        <span className="text-xl sm:text-2xl font-medium text-rose-300 mx-2">to</span>
+                        <span className="text-xl sm:text-2xl font-medium text-white/80 mx-2">to</span>
                         <span>{formatCurrency(ourCostMax)}</span>
-                      </>
+                      </span>
                     )}
                   </div>
-                  <div className="text-rose-200 text-sm leading-tight whitespace-nowrap">
+                  <div className="text-white text-sm font-medium leading-tight">
                     {currentData.rateMin === currentData.rateMax ? (
-                      `$${currentData.rateMin.toFixed(2)} / hr`
+                      <span>${currentData.rateMin.toFixed(2)} / hr</span>
                     ) : (
-                      `$${currentData.rateMin.toFixed(2)} to $${currentData.rateMax.toFixed(2)} / hr`
+                      <span className="whitespace-nowrap">
+                        <span>${currentData.rateMin.toFixed(2)} / hr</span>
+                        <span className="text-xs opacity-75 mx-1">to</span>
+                        <span>${currentData.rateMax.toFixed(2)} / hr</span>
+                      </span>
                     )}
                   </div>
                 </div>
@@ -303,28 +317,28 @@ export default function App() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center">
-                      <TrendingDown className="w-5 h-5 mr-2 text-emerald-500" />
+                    <h3 className="text-lg font-bold text-black uppercase tracking-wider mb-2 flex items-center">
+                      <TrendingDown className="w-5 h-5 mr-2 text-[#af0606]" />
                       Your Estimated Savings
                     </h3>
-                    <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight leading-tight mt-2 whitespace-nowrap">
+                    <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight leading-tight mt-2">
                       {savingsMin === savingsMax ? (
                         <span>{formatCurrency(savingsMin)}</span>
                       ) : (
                         <>
-                          <span>{formatCurrency(savingsMin)}</span> <span className="text-xl sm:text-2xl lg:text-3xl text-emerald-400 font-bold">to</span>
+                          <span>{formatCurrency(savingsMin)} <span className="text-xl sm:text-2xl lg:text-3xl text-emerald-500 font-bold">to</span></span>
                           <br />
                           <span>{formatCurrency(savingsMax)}</span>
                         </>
                       )}
                     </div>
-                    <p className="text-slate-500 mt-4 font-medium">
+                    <p className="text-black mt-4 font-semibold">
                       Per employee, per year.
                     </p>
                   </div>
                   
                   <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center min-w-[160px]">
-                    <div className="text-sm font-semibold text-emerald-700 mb-1">Cost Reduction</div>
+                    <div className="text-sm font-bold text-black mb-1">Cost Reduction</div>
                     <div className="text-4xl font-extrabold text-emerald-600">~{savingsPercentage}%</div>
                   </div>
 
@@ -333,17 +347,17 @@ export default function App() {
               
               {/* Additional Value Add footer */}
               <div className="bg-slate-50 px-6 md:px-8 py-4 border-t border-slate-100">
-                <p className="text-sm text-slate-600 flex items-center justify-center md:justify-start">
-                  <LineChart className="w-4 h-4 mr-2 text-rose-500" />
-                  <strong>Hidden Bonus:</strong> US hiring adds ~25% in taxes and benefits. Your true savings are likely much higher!
+                <p className="text-sm text-black flex items-center justify-center md:justify-start">
+                  <LineChart className="w-4 h-4 mr-2 text-[#af0606]" />
+                  <strong>Hidden Bonus:</strong> &nbsp;US hiring adds ~25% in taxes and benefits. Your true savings are likely much higher!
                 </p>
               </div>
             </div>
 
             {/* Rate Breakdown Card */}
             <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
-              <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center">
-                <PieChart className="w-5 h-5 mr-2 text-rose-500" />
+              <h3 className="text-lg font-bold text-black mb-6 flex items-center">
+                <PieChart className="w-5 h-5 mr-2 text-[#af0606]" />
                 Estimated Breakdown
               </h3>
               
@@ -351,52 +365,52 @@ export default function App() {
                 {/* Payroll */}
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
-                    <span className="font-semibold text-slate-700">
-                      Talent's Payroll <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.70)})</span>
+                    <span className="font-semibold text-black">
+                      Talent's Payroll <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.70)})</span>
                     </span>
-                    <span className="font-bold text-slate-900">70%</span>
+                    <span className="font-bold text-black">70%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3">
-                    <div className="bg-rose-600 h-3 rounded-full" style={{ width: '70%' }}></div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div className="bg-[#af0606] h-3 rounded-full" style={{ width: '70%' }}></div>
                   </div>
                 </div>
 
                 {/* Bonuses */}
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
-                    <span className="font-semibold text-slate-700">
-                      Quarterly Bonuses <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.15)})</span>
+                    <span className="font-semibold text-black">
+                      Quarterly Bonuses <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.15)})</span>
                     </span>
-                    <span className="font-bold text-slate-900">15%</span>
+                    <span className="font-bold text-black">15%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3">
-                    <div className="bg-rose-500 h-3 rounded-full opacity-90" style={{ width: '15%' }}></div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div className="bg-[#af0606] h-3 rounded-full opacity-80" style={{ width: '15%' }}></div>
                   </div>
                 </div>
 
                 {/* Benefits */}
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
-                    <span className="font-semibold text-slate-700">
-                      Benefits (Healthcare, local statutory allowances, and talent recognition) <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.10)})</span>
+                    <span className="font-semibold text-black">
+                      Benefits (Healthcare, local statutory allowances, and talent recognition) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.10)})</span>
                     </span>
-                    <span className="font-bold text-slate-900">10%</span>
+                    <span className="font-bold text-black">10%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3">
-                    <div className="bg-rose-400 h-3 rounded-full opacity-80" style={{ width: '10%' }}></div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div className="bg-[#af0606] h-3 rounded-full opacity-60" style={{ width: '10%' }}></div>
                   </div>
                 </div>
 
                 {/* TWB Program */}
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
-                    <span className="font-semibold text-slate-700">
-                      Talent Development & Community (Talent Without Borders training, coaching, and community support) <span className="font-normal text-slate-500 ml-1">({formatBreakdownAmount(0.05)})</span>
+                    <span className="font-semibold text-black">
+                      Talent Development & Community (Talent Without Borders training, coaching, and community support) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.05)})</span>
                     </span>
-                    <span className="font-bold text-slate-900">5%</span>
+                    <span className="font-bold text-black">5%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-3">
-                    <div className="bg-rose-300 h-3 rounded-full opacity-70" style={{ width: '5%' }}></div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div className="bg-[#af0606] h-3 rounded-full opacity-40" style={{ width: '5%' }}></div>
                   </div>
                 </div>
               </div>
