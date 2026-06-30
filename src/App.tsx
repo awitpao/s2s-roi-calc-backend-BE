@@ -388,29 +388,16 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Benefits */}
+                {/* Benefits & Community */}
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
                     <span className="font-semibold text-black">
-                      Benefits (Healthcare, local statutory allowances, and talent recognition) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.10)})</span>
+                      Benefits, Development & Community (Healthcare, Local Statutory allowances, Talent Recognition, Training, Coaching & Community Support) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.15)})</span>
                     </span>
-                    <span className="font-bold text-black">10%</span>
+                    <span className="font-bold text-black">15%</span>
                   </div>
                   <div className="w-full bg-slate-200 rounded-full h-3">
-                    <div className="bg-[#af0606] h-3 rounded-full opacity-60" style={{ width: '10%' }}></div>
-                  </div>
-                </div>
-
-                {/* TWB Program */}
-                <div>
-                  <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
-                    <span className="font-semibold text-black">
-                      Talent Development & Community (Talent Without Borders training, coaching, and community support) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.05)})</span>
-                    </span>
-                    <span className="font-bold text-black">5%</span>
-                  </div>
-                  <div className="w-full bg-slate-200 rounded-full h-3">
-                    <div className="bg-[#af0606] h-3 rounded-full opacity-40" style={{ width: '5%' }}></div>
+                    <div className="bg-[#af0606] h-3 rounded-full opacity-60" style={{ width: '15%' }}></div>
                   </div>
                 </div>
               </div>
