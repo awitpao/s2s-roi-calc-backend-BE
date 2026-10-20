@@ -93,21 +93,17 @@ const formatCurrency = (value: number) => {
 export default function App() {
   const [selectedRole, setSelectedRole] = useState(staffingData[0].role);
   
-  // Extract unique roles for the dropdown
   const roles = useMemo(() => {
     return Array.from(new Set(staffingData.map(d => d.role))).sort();
   }, []);
 
-  // Filter available levels based on selected role
   const availableLevels = useMemo(() => {
     return staffingData.filter(d => d.role === selectedRole).map(d => d.level);
   }, [selectedRole]);
 
-  // Set default level when role changes
   const [selectedLevel, setSelectedLevel] = useState(availableLevels[0]);
 
-  // Handle role change safely
-  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleRoleChange = (e: { target: { value: any; }; }) => {
     const newRole = e.target.value;
     setSelectedRole(newRole);
     const newLevels = staffingData.filter(d => d.role === newRole).map(d => d.level);
@@ -118,32 +114,23 @@ export default function App() {
     return staffingData.find(d => d.role === selectedRole && d.level === selectedLevel) || staffingData[0];
   }, [selectedRole, selectedLevel]);
 
-  // Calculations
   const ourCostMin = currentData.rateMin * ANNUAL_HOURS;
   const ourCostMax = currentData.rateMax * ANNUAL_HOURS;
   
-  // Calculate Savings (Conservative: US Min vs Our Max, Optimistic: US Max vs Our Min)
   const savingsMin = currentData.usMin - ourCostMax;
   const savingsMax = currentData.usMax - ourCostMin;
   const averageSavings = (savingsMin + savingsMax) / 2;
   const savingsPercentage = Math.round((averageSavings / ((currentData.usMin + currentData.usMax) / 2)) * 100);
 
-  // Helper to format breakdown amounts based on percentage
-  const formatBreakdownAmount = (percentage: number) => {
-    const minAmount = ourCostMin * percentage;
-    const maxAmount = ourCostMax * percentage;
+  // Helper to format breakdown amounts based on monthly percentage
+  const formatBreakdownMonthly = (percentage: number) => {
+    const minAmount = (ourCostMin / 12) * percentage;
+    const maxAmount = (ourCostMax / 12) * percentage;
     return minAmount === maxAmount
       ? formatCurrency(minAmount)
-      : (
-        <span className="whitespace-nowrap">
-          <span>{formatCurrency(minAmount)}</span>
-          <span className="mx-1 font-normal">to</span>
-          <span>{formatCurrency(maxAmount)}</span>
-        </span>
-      );
+      : `${formatCurrency(minAmount)} to ${formatCurrency(maxAmount)}`;
   };
 
-  // Generate Google Jobs Link dynamically
   const googleJobsUrl = `https://www.google.com/search?q=${encodeURIComponent(
     `${currentData.level} ${currentData.role} salary`
   )}&ibp=htl;jobs`;
@@ -157,7 +144,7 @@ export default function App() {
           <h1 className="text-3xl md:text-5xl font-extrabold text-black tracking-tight mb-4">
             Remote Hiring <span className="text-[#af0606]">ROI Calculator</span>
           </h1>
-          <p className="text-lg text-black max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-black max-w-2xl mx-auto">
             Compare the estimated annual cost of a dedicated Structure 2 Scale team member with a comparable U.S.-based hire
           </p>
         </div>
@@ -187,8 +174,8 @@ export default function App() {
                       <option key={role} value={role}>{role}</option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4">
-                    <ChevronRight className="w-4 h-4 rotate-90 text-[#af0606]" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                    <ChevronRight className="w-4 h-4 rotate-90" />
                   </div>
                 </div>
               </div>
@@ -208,14 +195,14 @@ export default function App() {
                       <option key={level} value={level}>{level}</option>
                     ))}
                   </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4">
-                    <ChevronRight className="w-4 h-4 rotate-90 text-[#af0606]" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
+                    <ChevronRight className="w-4 h-4 rotate-90" />
                   </div>
                 </div>
               </div>
 
               <div className="pt-6 border-t border-slate-100">
-                <div className="flex items-start text-sm text-white bg-[#af0606] p-4 rounded-xl shadow-md">
+                <div className="flex items-start text-sm text-white bg-[#af0606] p-4 rounded-xl">
                   <Info className="w-5 h-5 text-white mr-3 flex-shrink-0 mt-0.5" />
                   <p>
                     Calculations are based on standard full-time hours (<span className="font-semibold text-white">2,080 hrs/yr</span>). US averages represent base salaries and exclude local hiring costs like benefits and taxes.
@@ -228,81 +215,96 @@ export default function App() {
           {/* Right Column: Output / Dashboard */}
           <div className="lg:col-span-8 space-y-6">
             
-            {/* Top Stat Cards Stacked vertically */}
+            {/* Top Stat Cards Stacked Vertically */}
             <div className="grid grid-cols-1 gap-6">
               
-              {/* US Avg Rate Card (Now on top) */}
+              {/* US Avg Rate Card */}
               <div className="bg-white rounded-2xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-black flex items-center">
+                  <h3 className="font-medium text-black flex items-center">
                     <Users className="w-5 h-5 mr-2 text-[#af0606]" />
                     US Average Salary
                   </h3>
                 </div>
                 <div className="overflow-hidden mb-2">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-1 tracking-tight leading-tight">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-3 tracking-tight leading-tight flex items-baseline flex-wrap gap-2">
                     {currentData.usMin === currentData.usMax ? (
                       <span>{formatCurrency(currentData.usMin)}</span>
                     ) : (
-                      <span className="whitespace-nowrap">
+                      <>
                         <span>{formatCurrency(currentData.usMin)}</span>
-                        <span className="text-xl sm:text-2xl font-medium text-black mx-2">to</span>
+                        <span className="text-xl sm:text-2xl font-medium text-slate-400">to</span>
                         <span>{formatCurrency(currentData.usMax)}</span>
-                      </span>
+                      </>
                     )}
                   </div>
-                  <div className="text-black text-sm mb-3 font-medium">
+                  
+                  <div className="mb-2 text-black font-medium text-sm">
                     {currentData.usMin === currentData.usMax ? (
-                      <span>~${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr</span>
+                      `$${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr`
                     ) : (
-                      <span className="whitespace-nowrap">
-                        <span>~${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr</span>
-                        <span className="text-xs mx-1">to</span>
-                        <span>${(currentData.usMax / ANNUAL_HOURS).toFixed(2)} / hr</span>
-                      </span>
+                      <>
+                        ${(currentData.usMin / ANNUAL_HOURS).toFixed(2)} / hr
+                        <span className="mx-2 text-slate-400">to</span>
+                        ${(currentData.usMax / ANNUAL_HOURS).toFixed(2)} / hr
+                      </>
                     )}
                   </div>
+
                   <a 
                     href={googleJobsUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-sm font-bold text-[#af0606] hover:text-[#8a0505] transition-colors"
+                    className="inline-flex items-center text-sm font-medium text-[#af0606] hover:opacity-80 transition-colors"
                   >
-                    Verify on Google Jobs <ExternalLink className="w-4 h-4 ml-1" />
+                    Verify on Google Jobs <ExternalLink className="w-3 h-3 ml-1" />
                   </a>
                 </div>
               </div>
 
-              {/* Our Rate Card (Now below US average) */}
-              <div className="bg-[#af0606] rounded-2xl p-6 shadow-lg shadow-red-900/20 text-white relative overflow-hidden">
+              {/* Our Rate Card */}
+              <div className="bg-[#af0606] rounded-2xl p-6 shadow-lg text-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-2xl"></div>
                 <div className="flex items-center justify-between mb-4 relative z-10">
-                  <h3 className="font-semibold text-white flex items-center">
+                  <h3 className="font-medium text-white flex items-center">
                     <ShieldCheck className="w-5 h-5 mr-2 text-white" />
                     Estimated Annual Investment
                   </h3>
                 </div>
                 <div className="relative z-10 overflow-hidden">
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 tracking-tight leading-tight">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 tracking-tight leading-tight flex items-baseline flex-wrap gap-2">
                     {ourCostMin === ourCostMax ? (
                       <span>{formatCurrency(ourCostMin)}</span>
                     ) : (
-                      <span className="whitespace-nowrap">
+                      <>
                         <span>{formatCurrency(ourCostMin)}</span>
-                        <span className="text-xl sm:text-2xl font-medium text-white/80 mx-2">to</span>
+                        <span className="text-xl sm:text-2xl font-medium text-white opacity-70">to</span>
                         <span>{formatCurrency(ourCostMax)}</span>
-                      </span>
+                      </>
                     )}
                   </div>
-                  <div className="text-white text-sm font-medium leading-tight">
+                  
+                  <div className="text-white opacity-95 text-base font-medium mb-1 flex items-baseline flex-wrap gap-2">
+                    {ourCostMin === ourCostMax ? (
+                      <span>{formatCurrency(ourCostMin / 12)} / mo</span>
+                    ) : (
+                      <>
+                        <span>{formatCurrency(ourCostMin / 12)} / mo</span>
+                        <span className="text-sm opacity-75">to</span>
+                        <span>{formatCurrency(ourCostMax / 12)} / mo</span>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="text-white opacity-90 text-sm leading-tight flex items-baseline flex-wrap gap-2">
                     {currentData.rateMin === currentData.rateMax ? (
                       <span>${currentData.rateMin.toFixed(2)} / hr</span>
                     ) : (
-                      <span className="whitespace-nowrap">
+                      <>
                         <span>${currentData.rateMin.toFixed(2)} / hr</span>
-                        <span className="text-xs opacity-75 mx-1">to</span>
+                        <span className="text-xs opacity-75">to</span>
                         <span>${currentData.rateMax.toFixed(2)} / hr</span>
-                      </span>
+                      </>
                     )}
                   </div>
                 </div>
@@ -310,15 +312,16 @@ export default function App() {
 
             </div>
 
+            {}
             {/* Savings Big Card */}
             <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
-              <div className="p-1 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+              <div className="p-1 bg-emerald-500"></div>
               <div className="p-6 md:p-8">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   
                   <div>
-                    <h3 className="text-lg font-bold text-black uppercase tracking-wider mb-2 flex items-center">
-                      <TrendingDown className="w-5 h-5 mr-2 text-[#af0606]" />
+                    <h3 className="text-lg font-semibold text-black uppercase tracking-wider mb-2 flex items-center">
+                      <TrendingDown className="w-5 h-5 mr-2 text-emerald-600" />
                       Your Estimated Savings
                     </h3>
                     <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-600 tracking-tight leading-tight mt-2">
@@ -326,19 +329,19 @@ export default function App() {
                         <span>{formatCurrency(savingsMin)}</span>
                       ) : (
                         <>
-                          <span>{formatCurrency(savingsMin)} <span className="text-xl sm:text-2xl lg:text-3xl text-emerald-500 font-bold">to</span></span>
+                          <span>{formatCurrency(savingsMin)}</span> <span className="text-xl sm:text-2xl lg:text-3xl text-black font-bold">to</span>
                           <br />
                           <span>{formatCurrency(savingsMax)}</span>
                         </>
                       )}
                     </div>
-                    <p className="text-black mt-4 font-semibold">
-                      Per employee, per year.
+                    <p className="text-black mt-4 font-medium">
+                      Per talent, per year.
                     </p>
                   </div>
                   
-                  <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center min-w-[160px]">
-                    <div className="text-sm font-bold text-black mb-1">Cost Reduction</div>
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center min-w-[160px]">
+                    <div className="text-sm font-semibold text-black mb-1">Cost Reduction</div>
                     <div className="text-4xl font-extrabold text-emerald-600">~{savingsPercentage}%</div>
                   </div>
 
@@ -348,8 +351,8 @@ export default function App() {
               {/* Additional Value Add footer */}
               <div className="bg-slate-50 px-6 md:px-8 py-4 border-t border-slate-100">
                 <p className="text-sm text-black flex items-center justify-center md:justify-start">
-                  <LineChart className="w-4 h-4 mr-2 text-[#af0606]" />
-                  <strong>Hidden Bonus:</strong> &nbsp;US hiring adds ~25% in taxes and benefits. Your true savings are likely much higher!
+                  <LineChart className="w-4 h-4 mr-2 text-emerald-600" />
+                  <strong>Hidden Bonus:</strong> US hiring adds ~25% in taxes and benefits. Your true savings are likely much higher!
                 </p>
               </div>
             </div>
@@ -358,7 +361,7 @@ export default function App() {
             <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6 md:p-8">
               <h3 className="text-lg font-bold text-black mb-6 flex items-center">
                 <PieChart className="w-5 h-5 mr-2 text-[#af0606]" />
-                Estimated Breakdown
+                Estimated Monthly Breakdown
               </h3>
               
               <div className="space-y-5">
@@ -366,7 +369,7 @@ export default function App() {
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
                     <span className="font-semibold text-black">
-                      Talent's Payroll <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.70)})</span>
+                      Talent's Payroll <span className="font-medium text-black ml-1">({formatBreakdownMonthly(0.70)})</span>
                     </span>
                     <span className="font-bold text-black">70%</span>
                   </div>
@@ -379,7 +382,7 @@ export default function App() {
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
                     <span className="font-semibold text-black">
-                      Quarterly Bonuses <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.15)})</span>
+                      Monthly Bonuses <span className="font-medium text-black ml-1">({formatBreakdownMonthly(0.15)})</span>
                     </span>
                     <span className="font-bold text-black">15%</span>
                   </div>
@@ -392,7 +395,7 @@ export default function App() {
                 <div>
                   <div className="flex justify-between text-sm mb-2 flex-wrap sm:flex-nowrap gap-1">
                     <span className="font-semibold text-black">
-                      Benefits, Development & Community (Healthcare, Local Statutory allowances, Talent Recognition, Training, Coaching & Community Support) <span className="font-medium text-black ml-1">({formatBreakdownAmount(0.15)})</span>
+                      Benefits, Development & Community (Healthcare, Local Statutory allowances, Talent Recognition, Training, Coaching & Community Support) <span className="font-medium text-black ml-1">({formatBreakdownMonthly(0.15)})</span>
                     </span>
                     <span className="font-bold text-black">15%</span>
                   </div>
