@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Briefcase, ChevronRight, ExternalLink, LineChart, ShieldCheck, Users, TrendingDown, Info, PieChart } from 'lucide-react';
 
 // Convert hourly to annual based on 2080 hours (40 hrs/week * 52 weeks)
